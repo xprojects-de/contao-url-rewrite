@@ -10,21 +10,11 @@ use Terminal42\UrlRewriteBundle\RewriteConfigInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('terminal42_url_rewrite');
-
-        // Keep compatibility with symfony/config < 4.2
-        if (method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            $rootNode = $treeBuilder->root('terminal42_url_rewrite');
-        }
-
-        $rootNode
+        $treeBuilder
+            ->getRootNode()
             ->children()
                 ->booleanNode('backend_management')
                     ->info('Enable the rewrites management in Contao backend.')
@@ -63,8 +53,18 @@ class Configuration implements ConfigurationInterface
                                             ->thenInvalid('Invalid response code %s.')
                                         ->end()
                                     ->end()
+                                    ->arrayNode('conditionalUris')
+                                        ->useAttributeAsKey('name')
+                                        ->normalizeKeys(false)
+                                        ->scalarPrototype()->end()
+                                        ->defaultValue([])
+                                    ->end()
                                     ->scalarNode('uri')
                                         ->info('The response redirect URI. Irrelevant if response code is set to 410.')
+                                    ->end()
+                                    ->booleanNode('keepQueryParams')
+                                        ->info('Whether or not to keep the request\'s query parameters.')
+                                        ->defaultFalse()
                                     ->end()
                                 ->end()
                             ->end()

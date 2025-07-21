@@ -7,16 +7,8 @@
                 <target>Interne Bezeichnung</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.name.1">
-                <source>Please enter the rewrite internal name (visible only in backend).</source>
+                <source>Please enter the internal name (visible only in backend) for this redirect.</source>
                 <target>Hier können Sie eine interne Bezeichnung erfassen (nur im Backend ersichtlich).</target>
-            </trans-unit>
-            <trans-unit id="tl_url_rewrite.type.0">
-                <source>Type</source>
-                <target>Typ</target>
-            </trans-unit>
-            <trans-unit id="tl_url_rewrite.type.1">
-                <source>Here you can choose the type.</source>
-                <target>Wählen Sie hier den Typen der Umleitung aus.</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.priority.0">
                 <source>Priority</source>
@@ -39,7 +31,7 @@
                 <target>Umschreiberegel deaktivieren</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.inactive.1">
-                <source>Deactivate the rewrite rule. It will not be loaded into the router configuration.</source>
+                <source>Deactivate the redirect rule. It will not be loaded into the router configuration.</source>
                 <target>Deaktiviert die Umschreiberegel. Sie wird nicht in die Routerkonfiguration geladen.</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.requestHosts.0">
@@ -82,6 +74,14 @@
                 <source>Response status code</source>
                 <target>Antwort-Statuscode</target>
             </trans-unit>
+            <trans-unit id="tl_url_rewrite.conditionalResponseUri.0">
+                <source>Conditional response redirect URLs</source>
+                <target>Bedingte Antwort-Umleitungs-URLs</target>
+            </trans-unit>
+            <trans-unit id="tl_url_rewrite.conditionalResponseUri.1">
+                <source>Just like for the request conditions, use Symfony's Expression Language (e.g. &lt;em&gt;request.getPreferredLanguage() starts with 'de'&lt;/em&gt;) as key and as the value, use dynamic redirect URLs. If no condition matches, the regular redirect URL acts as a fallback. This way you can e.g. forward differently depending on the browser language.</source>
+                <target>Genau wie bei den Anfrage-Bedingungen verwenden Sie die Symfony Expression Language (z. B. <em>request.getPreferredLanguage() starts with 'de'</em>) als Schlüssel und dynamische Antwort-Umleitungs-URLs als Wert. Wenn keine Bedingung zutrifft, wird die reguläre Antwort-Umleitungs-URL als Fallback verwendet. So können Sie z. B. je nach Browsersprache unterschiedlich weiterleiten.</target>
+            </trans-unit>
             <trans-unit id="tl_url_rewrite.responseCode.1">
                 <source>Here you can select the response status code.</source>
                 <target>Wählen Sie hier den gewünschten Antwort-Statuscode aus.</target>
@@ -94,13 +94,21 @@
                 <source>Here you can enter the response redirect URI. You can use the insert tags, route attributes and query parameters as wildcards (e.g. &lt;em&gt;/foo/{bar}&lt;/em&gt;). To generate absolute URLs using insert tags you can use the &quot;absolute&quot; insert tag flag (e.g. &lt;em&gt;{{link_url::123|absolute}}&lt;/em&gt;).</source>
                 <target>Hier können Sie die Umleitungs-URL eingeben. Sie können Insert-Tags, Routen-Attribute und Query-Parameter als Wildcards nutzen (z.B. &lt;em&gt;/foo/{bar}&lt;/em&gt;). Wenn Sie absolute URLs generieren möchten, nutzen Sie das &quot;absolute&quot; Insert Tag Flag (bspw. &lt;em&gt;{{link_url::123|absolute}}&lt;/em&gt;).</target>
             </trans-unit>
+            <trans-unit id="tl_url_rewrite.keepQueryParams.0">
+                <source>Keep request query parameters</source>
+                <target>Query-Parameter der Anfrage beibehalten</target>
+            </trans-unit>
+            <trans-unit id="tl_url_rewrite.keepQueryParams.1">
+                <source>If you enable this checkbox, existing query parameters from the request will be added to the redirect.</source>
+                <target>Wenn Sie dieses Kontrollkästchen aktivieren, werden vorhandene Query-Parameter der Anfrage zur Weiterleitung hinzugefügt.</target>
+            </trans-unit>
             <trans-unit id="tl_url_rewrite.examples.0">
                 <source>Examples</source>
                 <target>Beispiele</target>
             </trans-unit>
 
             <trans-unit id="tl_url_rewrite.name_legend">
-                <source>Rewrite name</source>
+                <source>Redirect name</source>
                 <target>Bezeichnung</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.request_legend">
@@ -115,13 +123,12 @@
                 <source>Examples</source>
                 <target>Beispiele</target>
             </trans-unit>
-
             <trans-unit id="tl_url_rewrite.new.0">
                 <source>New rule</source>
                 <target>Neue Regel</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.new.1">
-                <source>Create a new rewrite rule</source>
+                <source>Create a new redirect rule</source>
                 <target>Eine neue Regel anlegen</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.show.0">
@@ -129,7 +136,7 @@
                 <target>Regel-Details</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.show.1">
-                <source>Show the details of rewrite rule ID %s</source>
+                <source>Show the details of redirect rule ID %s</source>
                 <target>Details der Regel ID %s anzeigen</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.edit.0">
@@ -137,7 +144,7 @@
                 <target>Regel editieren</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.edit.1">
-                <source>Edit rewrite rule ID %s</source>
+                <source>Edit redirect rule ID %s</source>
                 <target>Regel ID %s editieren</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.copy.0">
@@ -145,7 +152,7 @@
                 <target>Regel duplizieren</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.copy.1">
-                <source>Duplicate rewrite rule ID %s</source>
+                <source>Duplicate redirect rule ID %s</source>
                 <target>Regel ID %s duplizieren</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.delete.0">
@@ -153,7 +160,7 @@
                 <target>Regel löschen</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.delete.1">
-                <source>Delete rewrite rule ID %s</source>
+                <source>Delete redirect rule ID %s</source>
                 <target>Regel ID %s löschen</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.toggle.0">
@@ -161,7 +168,7 @@
                 <target>Regel aktivieren/deaktivieren</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.toggle.1">
-                <source>Activate/deactivate rewrite rule ID %s</source>
+                <source>Activate/deactivate redirect rule ID %s</source>
                 <target>Regel ID %s aktivieren/deaktivieren</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.qrCode.0">
@@ -172,24 +179,6 @@
                 <source>Generate QR code for rule ID %s</source>
                 <target>QR-Code für Regel ID %s generieren</target>
             </trans-unit>
-
-            <trans-unit id="tl_url_rewrite.typeRef.basic.0">
-                <source>Basic</source>
-                <target>Einfach</target>
-            </trans-unit>
-            <trans-unit id="tl_url_rewrite.typeRef.basic.1">
-                <source>Allows to define the request matching using the basic Symfony routing features.</source>
-                <target>Erlaubt die Anfrage-Zuordnung auf Basis von einfachen Symfony Routing Funktionen.</target>
-            </trans-unit>
-            <trans-unit id="tl_url_rewrite.typeRef.expert.0">
-                <source>Expert</source>
-                <target>Komplex</target>
-            </trans-unit>
-            <trans-unit id="tl_url_rewrite.typeRef.expert.1">
-                <source>Allows to define the request condition using the &lt;a href=&quot;https://symfony.com/doc/current/components/expression_language.html&quot; target=&quot;_blank&quot;>Expression Language&lt;/a&gt;. For more information please &lt;a href=&quot;https://symfony.com/doc/current/routing/conditions.html&quot; target=&quot;_blank&quot;>visit this link&lt;/a&gt;.</source>
-                <target>Erlaubt die Anfrage-Zuordnung auf Basis der Symfony &lt;a href=&quot;https://symfony.com/doc/current/components/expression_language.html&quot; target=&quot;_blank&quot;>Expression Language&lt;/a&gt;. Für weitere Informationen &lt;a href=&quot;https://symfony.com/doc/current/routing/conditions.html&quot; target=&quot;_blank&quot;>besuchen Sie bitte diese Seite&lt;/a&gt;.</target>
-            </trans-unit>
-
             <trans-unit id="tl_url_rewrite.qrCodeRef.headline">
                 <source>Generate QR code</source>
                 <target>QR-Code generieren</target>
@@ -232,14 +221,12 @@
                 <target>Adresse auf Google Maps finden:</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.examplesRef.0.1">
-                <source>Type: basic
-Path restriction: find/{address}
+                <source>Path restriction: find/{address}
 Response code: 303 See Other
 Response redirect URL: https://www.google.com/maps?q={address}
 ---
 Result: domain.tld/find/Switzerland → https://www.google.com/maps?q=Switzerland</source>
-                <target>Typ: einfach
-Pfad-Einschränkung: find/{address}
+                <target>Pfad-Einschränkung: find/{address}
 Antwort-Statuscode: 303 See Other
 Antwort-Umleitungs-URL: https://www.google.com/maps?q={address}
 ---
@@ -250,16 +237,14 @@ Resultat: domain.tld/find/Schweiz → https://www.google.com/maps?q=Schweiz</tar
                 <target>Zu einem bestimmten News-Artikel weiterleiten:</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.examplesRef.1.1">
-                <source>Type: basic
-Path restriction: news/{news}
+                <source>Path restriction: news/{news}
 Requirements: [news => \d+]
 Response code: 301 Moved Permanently
 Response redirect URL: {{news_url::{news}|absolute}}
 ---
 Result: domain.tld/news/123 → domain.tld/news-reader/foobar-123.html
 Result: domain.tld/news/foobar → 404 Page Not Found</source>
-                <target>Typ: einfach
-Pfad-Einschränkung: news/{news}
+                <target>Pfad-Einschränkung: news/{news}
 Extra-Anforderungen: [news => \d+]
 Antwort-Statuscode: 301 Moved Permanently
 Antwort-Umleitungs-URL: {{news_url::{news}|absolute}}
@@ -268,19 +253,17 @@ Resultat: domain.tld/news/123 → domain.tld/news-reader/foobar-123.html
 Resultat: domain.tld/news/foobar → 404 Page Not Found</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.examplesRef.2.0">
-                <source>Rewrite legacy URLs with query string:</source>
+                <source>Redirect legacy URLs with query string:</source>
                 <target>Alte URLs mit Query Parameter umschreiben:</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.examplesRef.2.1">
-                <source>Type: expert
-Path restriction: home.php
+                <source>Path restriction: home.php
 Request condition: context.getMethod() == 'GET' and request.query.has('page')
 Response code: 301 Moved Permanently
 Response redirect URL: {{link_url::{page}|absolute}}
 ---
 Result: domain.tld/home.php?page=123 → domain.tld/foobar-123.html</source>
-                <target>Typ: komplex
-Pfad-Einschränkung: home.php
+                <target>Pfad-Einschränkung: home.php
 Anfrage-Bedingung: context.getMethod() == 'GET' and request.query.has('page')
 Antwort-Statuscode: 301 Moved Permanently
 Antwort-Umleitungs-URL: {{link_url::{page}|absolute}}
@@ -288,20 +271,18 @@ Antwort-Umleitungs-URL: {{link_url::{page}|absolute}}
 Resultat: domain.tld/home.php?page=123 → domain.tld/foobar-123.html</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.examplesRef.3.0">
-                <source>Rewrite URLs including slashes (without query string) to new domain:</source>
+                <source>Redirect URLs including slashes (without query string) to new domain:</source>
                 <target>Alle URLs inklusive Slashes (ohne Query Parameter) zu neuer Domain umschreiben:</target>
             </trans-unit>
             <trans-unit id="tl_url_rewrite.examplesRef.3.1">
-                <source>Type: basic
-Hosts restriction: [domain.com]
+                <source>Hosts restriction: [domain.com]
 Path restriction: /{wildcard}
 Requirements: [wildcard => .*]
 Response code: 301 Moved Permanently
 Response redirect URL: https://domain.tld/{wildcard}
 ---
 Result: domain.com/blog/test → https://domain.tld/blog/test</source>
-                <target>Typ: einfach
-Host-Einschränkung: [domain.com]
+                <target>Host-Einschränkung: [domain.com]
 Pfad-Einschränkung: /{wildcard}
 Extra-Anforderungen: [wildcard => .*]
 Antwort-Statuscode: 301 Moved Permanently

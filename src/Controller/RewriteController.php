@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Terminal42\UrlRewriteBundle\Controller;
 
 use Contao\CoreBundle\InsertTag\InsertTagParser;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,46 +17,32 @@ use Terminal42\UrlRewriteBundle\Routing\UrlRewriteLoader;
 
 class RewriteController
 {
-    /**
-     * @var ConfigProviderInterface
-     */
-    private $configProvider;
-
-    /**
-     * @var InsertTagParser
-     */
-    private $insertTagParser;
-
-    /**
-     * RewriteController constructor.
-     */
-    public function __construct(ConfigProviderInterface $configProvider, InsertTagParser $insertTagParser)
-    {
-        $this->configProvider = $configProvider;
-        $this->insertTagParser = $insertTagParser;
+    public function __construct(
+        private readonly ConfigProviderInterface $configProvider,
+        private readonly InsertTagParser $insertTagParser,
+        private readonly ExpressionLanguage $expressionLanguage,
+    ) {
     }
 
     /**
-     * Index action.
-     *
      * @throws RouteNotFoundException
      */
     public function indexAction(Request $request): Response
     {
         if (!$request->attributes->has(UrlRewriteLoader::ATTRIBUTE_NAME)) {
-            throw new RouteNotFoundException(sprintf('The "%s" attribute is missing', UrlRewriteLoader::ATTRIBUTE_NAME));
+            throw new RouteNotFoundException(\sprintf('The "%s" attribute is missing', UrlRewriteLoader::ATTRIBUTE_NAME));
         }
 
         $rewriteId = $request->attributes->get(UrlRewriteLoader::ATTRIBUTE_NAME);
 
         try {
             $config = $this->configProvider->find((string) $rewriteId);
-        } catch (TemporarilyUnavailableConfigProviderException $e) {
+        } catch (TemporarilyUnavailableConfigProviderException) {
             return new Response(Response::$statusTexts[503], 503);
         }
 
         if (null === $config) {
-            throw new RouteNotFoundException(sprintf('URL rewrite config ID %s does not exist', $rewriteId));
+            throw new RouteNotFoundException(\sprintf('URL rewrite config ID %s does not exist', $rewriteId));
         }
 
         $responseCode = $config->getResponseCode();
@@ -74,9 +61,9 @@ class RewriteController
     /**
      * Generate the URI.
      */
-    private function generateUri(Request $request, RewriteConfigInterface $config): ?string
+    private function generateUri(Request $request, RewriteConfigInterface $config): string|null
     {
-        if (null === ($uri = $config->getResponseUri())) {
+        if (null === ($uri = $this->findBestUri($request, $config))) {
             return null;
         }
 
@@ -87,8 +74,12 @@ class RewriteController
         $uri = preg_replace('@(?<!http:|https:|^)/+@', '/', $uri);
 
         // Make the URL absolute if it's not yet already
-        if (!preg_match('@^(https?:)?//@', $uri)) {
-            $uri = $request->getSchemeAndHttpHost().$request->getBasePath().'/'.ltrim($uri, '/');
+        if (!preg_match('@^(https?:)?//@', (string) $uri)) {
+            $uri = $request->getSchemeAndHttpHost().$request->getBasePath().'/'.ltrim((string) $uri, '/');
+        }
+
+        if ($config->keepQueryParams()) {
+            $uri .= '?'.http_build_query($request->query->all());
         }
 
         return $uri;
@@ -124,5 +115,16 @@ class RewriteController
         }
 
         return $this->insertTagParser->replaceInline($uri);
+    }
+
+    private function findBestUri(Request $request, RewriteConfigInterface $config): string|null
+    {
+        foreach ($config->getConditionalResponseUris() as $condition => $uri) {
+            if ($this->expressionLanguage->evaluate($condition, ['request' => $request])) {
+                return $uri;
+            }
+        }
+
+        return $config->getResponseUri();
     }
 }

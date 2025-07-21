@@ -1,12 +1,6 @@
 <?php
 
-/*
- * UrlRewrite Bundle for Contao Open Source CMS.
- *
- * @copyright  Copyright (c) 2021, terminal42 gmbh
- * @author     terminal42 <https://terminal42.ch>
- * @license    MIT
- */
+declare(strict_types=1);
 
 use Contao\System;
 
@@ -18,10 +12,6 @@ if (System::getContainer()->getParameter('terminal42_url_rewrite.backend_managem
     $GLOBALS['BE_MOD']['system']['url_rewrites'] = [
         'tables' => ['tl_url_rewrite'],
         'qrCode' => ['terminal42_url_rewrite.qr_code_controller', 'index'],
+        'stylesheet' => ['bundles/terminal42urlrewrite/style.css'],
     ];
 }
-
-/*
- * Hooks
- */
-$GLOBALS['TL_HOOKS']['insertTagFlags'][] = ['terminal42_url_rewrite.listener.insert_tags', 'onInsertTagFlags'];
