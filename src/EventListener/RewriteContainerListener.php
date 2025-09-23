@@ -53,27 +53,26 @@ class RewriteContainerListener
         return $value;
     }
 
-    /**
-     * On records modified.
-     */
+    #[AsCallback('tl_url_rewrite', 'config.onsubmit')]
+    #[AsCallback('tl_url_rewrite', 'config.ondelete')]
+    #[AsCallback('tl_url_rewrite', 'config.oncopy')]
+    #[AsCallback('tl_url_rewrite', 'config.onrestore_version')]
     public function onRecordsModified(): void
     {
         $this->clearRouterCache();
     }
 
-    /**
-     * On inactive save callback.
-     */
-    public function onInactiveSaveCallback($value)
+    #[AsCallback('tl_url_rewrite', 'fields.priority.save')]
+    public function validatePriority(mixed $value): mixed
     {
-        $this->clearRouterCache();
+        if (!preg_match('/^-?\d+$/', (string) $value)) {
+            throw new \RuntimeException($GLOBALS['TL_LANG']['ERR']['digit']);
+        }
 
         return $value;
     }
 
-    /**
-     * On name save callback.
-     */
+    #[AsCallback('tl_url_rewrite', 'fields.name.save')]
     public function onNameSaveCallback($value, DataContainer $dataContainer)
     {
         if ('' === $value) {
@@ -91,7 +90,8 @@ class RewriteContainerListener
     /**
      * Validate that request requirements contain valid regular expression.
      */
-    public function onRequestRequirementsSaveCallback($value)
+    #[AsCallback('tl_url_rewrite', 'fields.requestRequirements.save')]
+    public function onRequestRequirementsSaveCallback(mixed $value): mixed
     {
         foreach (StringUtil::deserialize($value, true) as $regex) {
             try {
@@ -106,9 +106,7 @@ class RewriteContainerListener
         return $value;
     }
 
-    /**
-     * On generate the label.
-     */
+    #[AsCallback('tl_url_rewrite', 'list.label.label')]
     public function onGenerateLabel(array $row): string
     {
         if (410 === (int) $row['responseCode']) {
@@ -127,9 +125,7 @@ class RewriteContainerListener
         );
     }
 
-    /**
-     * Get the response codes.
-     */
+    #[AsCallback('tl_url_rewrite', 'fields.responseCode.options')]
     public function getResponseCodes(): array
     {
         $options = [];
@@ -141,9 +137,7 @@ class RewriteContainerListener
         return $options;
     }
 
-    /**
-     * Generate the examples.
-     */
+    #[AsCallback('tl_url_rewrite', 'fields.examples.input_field')]
     public function generateExamples(): string
     {
         $buffer = '';
@@ -162,21 +156,7 @@ class RewriteContainerListener
         return \sprintf('<div class="widget long">%s</div>', $buffer);
     }
 
-    /**
-     * On toggle button callback.
-     */
-    public function onToggleButtonCallback(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
-    {
-        if ($row['inactive']) {
-            $icon = 'invisible.svg';
-        }
-
-        return '<a href="'.Backend::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'" onclick="Backend.getScrollOffset();return AjaxRequest.toggleField(this,true)">'.Image::getHtml($icon, $label, 'data-icon="'.Image::getPath('visible.svg').'" data-icon-disabled="'.Image::getPath('invisible.svg').'" data-state="'.($row['inactive'] ? 0 : 1).'"').'</a> ';
-    }
-
-    /**
-     * On QR code button callback.
-     */
+    #[AsCallback('tl_url_rewrite', 'list.global_operations.qrCode.button')]
     public function onQrCodeButtonCallback(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
         return $this->qrCodeGenerator->validate($row) ? '<a href="'.Backend::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';

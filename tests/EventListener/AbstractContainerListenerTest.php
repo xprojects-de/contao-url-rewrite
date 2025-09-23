@@ -80,11 +80,6 @@ abstract class AbstractContainerListenerTest extends ContaoTestCase
         $this->assertInstanceOf(RewriteContainerListener::class, $this->listener);
     }
 
-    public function testOnInactiveSaveCallback(): void
-    {
-        $this->assertSame(1, $this->listener->onInactiveSaveCallback(1));
-    }
-
     public function testOnNameSaveCallback(): void
     {
         $dataContainer = $this->createMock(DataContainer::class);

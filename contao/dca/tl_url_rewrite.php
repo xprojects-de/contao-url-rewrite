@@ -11,18 +11,6 @@ $GLOBALS['TL_DCA']['tl_url_rewrite'] = [
     'config' => [
         'dataContainer' => DC_Table::class,
         'enableVersioning' => true,
-        'onsubmit_callback' => [
-            ['terminal42_url_rewrite.listener.rewrite_container', 'onRecordsModified'],
-        ],
-        'ondelete_callback' => [
-            ['terminal42_url_rewrite.listener.rewrite_container', 'onRecordsModified'],
-        ],
-        'oncopy_callback' => [
-            ['terminal42_url_rewrite.listener.rewrite_container', 'onRecordsModified'],
-        ],
-        'onrestore_callback' => [
-            ['terminal42_url_rewrite.listener.rewrite_container', 'onRecordsModified'],
-        ],
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -41,7 +29,6 @@ $GLOBALS['TL_DCA']['tl_url_rewrite'] = [
         'label' => [
             'fields' => ['name'],
             'format' => '%s',
-            'label_callback' => ['terminal42_url_rewrite.listener.rewrite_container', 'onGenerateLabel'],
         ],
         'operations' => [
             'edit',
@@ -52,7 +39,6 @@ $GLOBALS['TL_DCA']['tl_url_rewrite'] = [
             'qrCode' => [
                 'href' => 'key=qrCode',
                 'icon' => 'bundles/terminal42urlrewrite/icon-qr.svg',
-                'button_callback' => ['terminal42_url_rewrite.listener.rewrite_container', 'onQrCodeButtonCallback'],
             ],
         ],
     ],
@@ -77,9 +63,6 @@ $GLOBALS['TL_DCA']['tl_url_rewrite'] = [
             'eval' => ['maxlength' => 255, 'tl_class' => 'w50'],
             'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
-            'save_callback' => [
-                ['terminal42_url_rewrite.listener.rewrite_container', 'onNameSaveCallback'],
-            ],
         ],
         'priority' => [
             'default' => '0',
@@ -89,13 +72,6 @@ $GLOBALS['TL_DCA']['tl_url_rewrite'] = [
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w25'],
             'sql' => ['type' => 'integer', 'default' => '0'],
-            'save_callback' => [static function ($value) {
-                if (!preg_match('/^-?\d+$/', (string) $value)) {
-                    throw new RuntimeException($GLOBALS['TL_LANG']['ERR']['digit']);
-                }
-
-                return $value;
-            }],
         ],
         'inactive' => [
             'reverseToggle' => true,
@@ -103,9 +79,6 @@ $GLOBALS['TL_DCA']['tl_url_rewrite'] = [
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w25 m12'],
             'sql' => ['type' => 'boolean', 'default' => 0],
-            'save_callback' => [
-                ['terminal42_url_rewrite.listener.rewrite_container', 'onInactiveSaveCallback'],
-            ],
         ],
         'comment' => [
             'search' => true,
@@ -129,9 +102,6 @@ $GLOBALS['TL_DCA']['tl_url_rewrite'] = [
             'inputType' => 'keyValueWizard',
             'eval' => ['decodeEntities' => true, 'tl_class' => 'clr'],
             'sql' => ['type' => 'blob', 'notnull' => false],
-            'save_callback' => [
-                ['terminal42_url_rewrite.listener.rewrite_container', 'onRequestRequirementsSaveCallback'],
-            ],
         ],
         'requestCondition' => [
             'inputType' => 'text',
@@ -144,7 +114,6 @@ $GLOBALS['TL_DCA']['tl_url_rewrite'] = [
             'sorting' => true,
             'flag' => DataContainer::SORT_ASC,
             'inputType' => 'select',
-            'options_callback' => ['terminal42_url_rewrite.listener.rewrite_container', 'getResponseCodes'],
             'eval' => ['tl_class' => 'w50'],
             'sql' => ['type' => 'integer', 'unsigned' => true],
         ],
@@ -172,9 +141,7 @@ $GLOBALS['TL_DCA']['tl_url_rewrite'] = [
             ],
             'sql' => ['type' => 'boolean', 'default' => false],
         ],
-        'examples' => [
-            'input_field_callback' => ['terminal42_url_rewrite.listener.rewrite_container', 'generateExamples'],
-        ],
+        'examples' => [],
     ],
 ];
 
