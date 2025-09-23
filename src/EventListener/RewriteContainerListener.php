@@ -177,15 +177,12 @@ class RewriteContainerListener
                     $this->clearSymfonyRouterCache($router);
                 }
             }
-        }
 
-        // Regular Symfony router (Contao 4.4+)
-        if ($this->router instanceof Router) {
-            $this->clearSymfonyRouterCache($this->router);
-        }
-
-        if ($this->router instanceof WarmableInterface) {
-            $this->router->warmUp($this->cacheDir);
+            foreach ($this->router->all() as $router) {
+                if ($router instanceof WarmableInterface) {
+                    $router->warmUp($this->cacheDir);
+                }
+            }
         }
 
         // Clear the Zend OPcache
