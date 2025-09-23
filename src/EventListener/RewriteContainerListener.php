@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Terminal42\UrlRewriteBundle\EventListener;
 
 use Contao\Backend;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\Input;
 use Contao\StringUtil;
 use Symfony\Cmf\Component\Routing\ChainRouterInterface;
+use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
@@ -23,17 +26,31 @@ class RewriteContainerListener
 {
     private readonly Filesystem $fs;
 
+    private readonly ExpressionLanguage $expressionLanguage;
+
     public function __construct(
         private readonly QrCodeGenerator $qrCodeGenerator,
         private readonly RouterInterface $router,
         private readonly string $cacheDir,
         private readonly ContaoFramework $framework,
+        private readonly ExpressionFunctionProviderInterface $expressionFunctionProvider,
         Filesystem|null $fs = null,
     ) {
         if (null === $fs) {
             $fs = new Filesystem();
         }
         $this->fs = $fs;
+        $this->expressionLanguage = new ExpressionLanguage(null, [$this->expressionFunctionProvider]);
+    }
+
+    #[AsCallback('tl_url_rewrite', 'fields.requestCondition.save')]
+    public function validateRequestCondition(string|null $value): mixed
+    {
+        if ($value) {
+            $this->expressionLanguage->lint($value, null);
+        }
+
+        return $value;
     }
 
     /**

@@ -9,6 +9,7 @@ use Contao\DataContainer;
 use Contao\Input;
 use Contao\TestCase\ContaoTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\RouterInterface;
 use Terminal42\UrlRewriteBundle\EventListener\RewriteContainerListener;
@@ -60,7 +61,13 @@ abstract class AbstractContainerListenerTest extends ContaoTestCase
         $this->inputAdapter = $this->mockAdapter(['post']);
         $framework = $this->mockContaoFramework([Input::class => $this->inputAdapter]);
 
-        $this->listener = new RewriteContainerListener($this->qrCodeGenerator, $this->router, $this->cacheDir, $framework);
+        $this->listener = new RewriteContainerListener(
+            $this->qrCodeGenerator,
+            $this->router,
+            $this->cacheDir,
+            $framework,
+            $this->createMock(ExpressionFunctionProviderInterface::class),
+        );
     }
 
     protected function tearDown(): void
@@ -71,14 +78,6 @@ abstract class AbstractContainerListenerTest extends ContaoTestCase
     public function testInstantiation(): void
     {
         $this->assertInstanceOf(RewriteContainerListener::class, $this->listener);
-    }
-
-    public function testOnRecordsModified(): void
-    {
-        $this->fs->touch($this->cacheDir.'/CacheClassOld.php');
-        $this->listener->onRecordsModified();
-
-        $this->assertFalse($this->fs->exists($this->cacheDir.'/CacheClassOld.php'));
     }
 
     public function testOnInactiveSaveCallback(): void

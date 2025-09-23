@@ -1,4 +1,7 @@
 services:
+    _defaults:
+        autoconfigure: true
+
     terminal42_url_rewrite.listener.rewrite_container:
         class: Terminal42\UrlRewriteBundle\EventListener\RewriteContainerListener
         public: true
@@ -7,4 +10,5 @@ services:
             - "@router"
             - "%kernel.cache_dir%"
             - "@contao.framework"
+            - "@router.expression_language_provider"
             - "@filesystem"
